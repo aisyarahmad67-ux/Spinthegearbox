@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚙️ CPM Gearbox ⚙️</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:radial-gradient(circle at top,#0a0a0a,#000);
+  color:#fff;
+  text-align:center;
+}
+
+/* Splash */
+#splash{
+  position:fixed; inset:0;
+  background:#000;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+#percent{font-size:32px;color:#0ff}
+
+/* Logo */
+.logo{
+  font-size:20px;
+  margin-top:20px;
+  text-shadow:0 0 10px #0ff,0 0 25px #a0f,0 0 40px #0ff;
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{ text-shadow:0 0 10px #0ff,0 0 20px #a0f;}
+  to{ text-shadow:0 0 20px #0ff,0 0 40px #a0f;}
+}
+.subtitle{font-size:14px;color:#ccc}
+
+/* Panel */
+.card{
+  margin:20px;
+  padding:22px;
+  border-radius:18px;
+  background:rgba(20,20,20,.9);
+  box-shadow:0 0 25px rgba(0,255,255,.25), inset 0 0 15px rgba(160,0,255,.15);
+  backdrop-filter:blur(6px);
+  animation:fade .5s ease;
+}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+button{
+  padding:12px 18px;
+  margin-top:12px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(45deg,#0ff,#a0f);
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 10px #0ff;
+}
+button:hover{opacity:.85}
+button:active{transform:scale(.96)}
+
+#result{
+  white-space:pre-line;
+  margin-top:12px;
+  text-align:left;
+  line-height:1.5;
+  background:rgba(0,0,0,.35);
+  padding:10px;
+  border-radius:10px;
+}
+
+.rating{margin-top:10px;color:#ff0;font-size:20px}
+
+/* Code Panel */
+.code-box{
+  margin-top:18px;
+  padding:12px;
+  border-radius:12px;
+  background:rgba(0,0,0,.35);
+  box-shadow:inset 0 0 10px rgba(0,255,255,.2);
+}
+input{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #0ff;
+  background:#000;
+  color:#0ff;
+  text-align:center;
+  width:70%;
+}
+.unlock-msg{
+  margin-top:8px;
+  color:#0f0;
+  font-size:13px;
+}
+
+/* WA Button */
+.wa-btn{
+  background:#222;
+  color:#fff;
+  border:1px solid #0ff;
+  font-size:13px;
+}
+.wa-btn:hover{background:#0ff;color:#000}
+</style>
+</head>
+
+<body>
+
+<div id="splash">
+  <div class="logo">⚙️ CPM Gearbox ⚙️</div>
+  <div id="percent">1%</div>
+</div>
+
+<div class="logo">⚙️ CPM Gearbox ⚙️</div>
+<div class="subtitle">(Mesin wajib v12 atau 18) (stiffnesnya bebas)
+</div>
+
+<div class="card">
+  <div id="result">Tekan SPIN untuk mendapatkan FULL SETTING made by Azka </div>
+  <div class="rating" id="rating"></div>
+
+  <button onclick="spin()">SPIN</button>
+
+  <div class="code-box">
+    <div>🔐 Masukin kode </div>
+    <input id="codeInput" placeholder="Masukkan kode...">
+    <br>
+    <button onclick="checkCode()">UNLOCK</button>
+    <div class="unlock-msg" id="unlockMsg"></div>
+  </div>
+
+  <button class="wa-btn" onclick="waKomplain()">
+Jika ingin komplain atau ada kekurangan atau gearboxnya kagak bagus SMS ke no wa ini +62 812-4548-7523
+  </button>
+</div>
+
+<script>
+let progress=[1,20,40,67,70,100],idx=0;
+let splash=setInterval(()=>{
+  document.getElementById("percent").innerText=progress[idx]+"%";
+  idx++;
+  if(idx>=progress.length){
+    clearInterval(splash);
+    document.getElementById("splash").style.display="none";
+  }
+},350);
+
+/* Data */
+const styles={
+"Drag":[3.9,4.1,3.7,4.3,3.85],
+"Drift":[3.2,3.0,3.3,3.1,3.25],
+"Sleeper":[3.4,3.35,3.45,3.5,3.38],
+"JDM Street":[3.5,3.4,3.6,3.45,3.55],
+"Circuit Racing":[3.3,3.25,3.35,3.4,3.28]
+};
+
+const cog={
+"Drag":"Belakang",
+"Drift":"Tengah",
+"Sleeper":"Super Rendah",
+"JDM Street":"Depan Tengah",
+"Circuit Racing":"Balance Tengah"
+};
+
+const susp={
+"Drag":`Rear Front 8 | Rear 6
+Offset Front 12 | Rear 36
+Incline Front 15 | Rear 36`,
+"Drift":`Rear Front 10 | Rear 9
+Offset Front 14 | Rear 34
+Incline Front 18 | Rear 38`,
+"Sleeper":`Rear Front 9 | Rear 9
+Offset Front 10 | Rear 30
+Incline Front 12 | Rear 32`,
+"JDM Street":`Rear Front 9 | Rear 8
+Offset Front 13 | Rear 33
+Incline Front 15 | Rear 35`,
+"Circuit Racing":`Rear Front 8 | Rear 8
+Offset Front 12 | Rear 34
+Incline Front 14 | Rear 36`
+};
+
+/* Spin */
+function spin(){
+  let keys=Object.keys(styles);
+  let style=keys[Math.floor(Math.random()*keys.length)];
+  let final=styles[style][Math.floor(Math.random()*5)];
+
+  let gears=`Final:${final}
+1:${(final*0.82).toFixed(2)}
+2:${(final*0.54).toFixed(2)}
+3:${(final*0.41).toFixed(2)}
+4:${(final*0.33).toFixed(2)}
+5:${(final*0.27).toFixed(2)}
+6:${(final*0.22).toFixed(2)}
+7:${(final*0.18).toFixed(2)}`;
+
+  showResult("STYLE: "+style,gears,cog[style],susp[style],4);
+}
+
+/* Unlock */
+function checkCode(){
+  let code=document.getElementById("codeInput").value.toLowerCase();
+  if(code==="efn"){
+    showResult("🏆 LEGENDARY GEARBOX 🏆",
+`Final:2.70
+1:3.10
+2:2.05
+3:1.55
+4:1.20
+5:0.95
+6:0.78
+7:0.60`,
+"Ultra Rendah",
+`Front 10 | Rear 10
+Offset Front 9 | Rear 25
+Incline Front 10 | Rear 28`,
+5);
+    document.getElementById("unlockMsg").innerText="Legendary unlocked!";
+  }else{
+    document.getElementById("unlockMsg").innerText="Kode salah!";
+  }
+}
+
+function showResult(title,gear,cg,sus,stars){
+  document.getElementById("result").innerText=
+`${title}
+
+${gear}
+
+CoG: ${cg}
+
+Suspensi:
+${sus}`;
+  document.getElementById("rating").innerText="⭐".repeat(stars);
+}
+
+function waKomplain(){
+  window.open("https://wa.me/6281245487523","_blank");
+}
+</script>
+</body>
+</html>
